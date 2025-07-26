@@ -60,3 +60,4 @@ CLAUDE.md
 .dir-locals.el
 logs/
 /question.json
+/.python-version
