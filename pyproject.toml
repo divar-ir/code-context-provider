@@ -1,0 +1,42 @@
+[project]
+name = "code-context-provider"
+version = "0.1.0"
+description = "MCP server providing AI-enhanced code search and context retrieval"
+license = { text = "MIT" }
+authors = [
+    { name = "Erfan Mirshams", email = "erfan.mirshams@gmail.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "fastmcp==2.4.0",
+    "mcp-server==0.1.4",
+    "mcp[cli]==1.11.0",
+    "opentelemetry-exporter-otlp==1.34.1",
+    "opentelemetry-sdk==1.34.1",
+    "pydantic==2.11.7",
+    "pydantic-ai[logfire]==0.4.2",
+    "pyyaml==6.0.2",
+    "requests==2.32.4",
+    "langfuse==3.2.0",
+    "jinja2==3.1.6",
+]
+
+[project.scripts]
+code-context-provider = "code_context_provider.main:main"
+ccp-evaluate = "code_context_provider.evaluator.evaluate:main"
+ccp-agent = "code_context_provider.evaluator.agent:cli_main"
+
+[build-system]
+requires = ["setuptools==75.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["code_context_provider"]
+package-dir = {"code_context_provider" = "src"}
+
+[tool.ruff]
+# Same as Black.
+line-length = 120
+indent-width = 4
+
+target-version = "py313"
