@@ -18,11 +18,9 @@ from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import SimpleSpanProcessor
 from starlette.requests import Request
 
-from backends.content_fetcher_factory import ContentFetcherFactory
-from backends.content_fetcher_protocol import ContentFetcherProtocol
+from backends.content_fetcher import AbstractContentFetcher, ContentFetcherFactory
 from backends.models import FormattedResult
-from backends.search_factory import SearchClientFactory
-from backends.search_protocol import SearchClientProtocol
+from backends.search import AbstractSearchClient, SearchClientFactory
 from core import PromptManager
 
 logging.basicConfig(level=logging.INFO)
@@ -35,18 +33,9 @@ class ServerConfig:
     def __init__(self) -> None:
         self.sse_port = int(os.getenv("MCP_SSE_PORT", "8000"))
         self.streamable_http_port = int(os.getenv("MCP_STREAMABLE_HTTP_PORT", "8080"))
-
-        # Langfuse configuration
-        self.langfuse_enabled = os.getenv("LANGFUSE_ENABLED", "false").lower() == "true"
-        if self.langfuse_enabled:
-            self.langfuse_public_key = self._get_required_env("LANGFUSE_PUBLIC_KEY")
-            self.langfuse_secret_key = self._get_required_env("LANGFUSE_SECRET_KEY")
-            self.langfuse_host = self._get_required_env("LANGFUSE_HOST")
-        else:
-            self.langfuse_public_key = ""
-            self.langfuse_secret_key = ""
-            self.langfuse_host = ""
-
+        self.langfuse_public_key = self._get_required_env("LANGFUSE_PUBLIC_KEY")
+        self.langfuse_secret_key = self._get_required_env("LANGFUSE_SECRET_KEY")
+        self.langfuse_host = self._get_required_env("LANGFUSE_HOST")
         self.search_backend = self._get_required_env("SEARCH_BACKEND").lower()
         self.zoekt_api_url = ""
         self.sourcegraph_endpoint = ""
@@ -71,9 +60,7 @@ class ServerConfig:
 class TelemetryManager:
     def __init__(self, config: ServerConfig) -> None:
         self.config = config
-        self.enabled = config.langfuse_enabled
-        if self.enabled:
-            self._setup_telemetry()
+        self._setup_telemetry()
 
     def _setup_telemetry(self) -> None:
         langfuse_auth = base64.b64encode(
@@ -87,12 +74,9 @@ class TelemetryManager:
         trace_provider.add_span_processor(SimpleSpanProcessor(OTLPSpanExporter()))
         trace.set_tracer_provider(trace_provider)
 
-    def get_tracer(self, name: str) -> trace.Tracer:
-        if self.enabled:
-            return trace.get_tracer(name)
-        else:
-            # Return a no-op tracer when disabled
-            return trace.get_tracer(name, tracer_provider=TracerProvider())
+    @staticmethod
+    def get_tracer(name: str) -> trace.Tracer:
+        return trace.get_tracer(name)
 
 
 config = ServerConfig()
@@ -106,7 +90,7 @@ search_client_kwargs = {
     "endpoint": config.sourcegraph_endpoint,
     "token": config.sourcegraph_token,
 }
-search_client: SearchClientProtocol = SearchClientFactory.create_client(
+search_client: AbstractSearchClient = SearchClientFactory.create_client(
     backend=config.search_backend, **search_client_kwargs
 )
 logger.info(f"Using {config.search_backend} search backend")
@@ -116,7 +100,7 @@ content_fetcher_kwargs = {
     "endpoint": config.sourcegraph_endpoint,
     "token": config.sourcegraph_token,
 }
-content_fetcher: ContentFetcherProtocol = ContentFetcherFactory.create_fetcher(
+content_fetcher: AbstractContentFetcher = ContentFetcherFactory.create_fetcher(
     backend=config.search_backend, **content_fetcher_kwargs
 )
 logger.info(f"Using {config.search_backend} content fetcher backend")
@@ -151,8 +135,6 @@ def _set_span_attributes(
     output_data: Dict[str, Any],
     session_id: str,
 ) -> None:
-    if not telemetry.enabled:
-        return
     try:
         span.set_attribute("langfuse.session.id", session_id)
         span.set_attribute("langfuse.tags", ["codesearch-mcp"])
@@ -162,7 +144,7 @@ def _set_span_attributes(
         logger.error(f"Error setting span attributes: {exc}")
 
 
-@tracer.start_as_current_span("CodeContextProvider:fetch_content")
+@tracer.start_as_current_span("CodeSearchMcp:fetch_content")
 def fetch_content(repo: str, path: str) -> str:
     if _shutdown_requested:
         logger.info("Shutdown in progress, declining new requests")
@@ -188,13 +170,14 @@ def fetch_content(repo: str, path: str) -> str:
         return "error fetching content"
 
 
-@tracer.start_as_current_span("CodeContextProvider:search")
+@tracer.start_as_current_span("CodeSearchMcp:search")
 def search(query: str) -> List[FormattedResult]:
     if _shutdown_requested:
         logger.info("Shutdown in progress, declining new requests")
         return []
 
     num_results = 30
+    logger.info(f"Zoekt LLM query: {query}")
 
     request: Request = get_http_request()
     trace_id = str(request.headers.get("X-TRACE-ID", uuid.uuid4()))

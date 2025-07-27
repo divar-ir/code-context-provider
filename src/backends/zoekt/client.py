@@ -3,10 +3,10 @@ from typing import List
 import requests
 
 from backends.models import FormattedResult, Match
-from backends.search_protocol import SearchClientProtocol
+from backends.search import AbstractSearchClient
 
 
-class Client(SearchClientProtocol):
+class Client(AbstractSearchClient):
     def __init__(
         self,
         base_url: str,

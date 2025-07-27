@@ -68,7 +68,7 @@ Supported backends:
 
 ## Prerequisites
 
-- **Python 3.10+**: Required for running the MCP servers
+- **Python 3.13+**: Required for running the MCP servers
 - **Search Backend**: Either a Sourcegraph instance or Zoekt server
 - **UV** (optional): Modern Python package manager for easier dependency management
 - **Langfuse** (optional): For observability and tracing

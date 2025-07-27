@@ -6,10 +6,10 @@ from urllib.parse import urljoin
 
 import requests
 
-from backends.content_fetcher_protocol import MAX_FILE_SIZE, ContentFetcherProtocol
+from backends.content_fetcher import MAX_FILE_SIZE, AbstractContentFetcher
 
 
-class SourcegraphContentFetcher(ContentFetcherProtocol):
+class SourcegraphContentFetcher(AbstractContentFetcher):
     """Fetches content from Sourcegraph repositories."""
 
     def __init__(self, endpoint: str, token: str = ""):

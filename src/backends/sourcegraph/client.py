@@ -6,7 +6,7 @@ from urllib.parse import urlencode
 import requests
 
 from backends.models import FormattedResult, Match
-from backends.search_protocol import SearchClientProtocol
+from backends.search import AbstractSearchClient
 
 logger = logging.getLogger(__name__)
 
@@ -68,9 +68,7 @@ class SSEParser:
         return {}
 
 
-class SourcegraphClient(SearchClientProtocol):
-    """Sourcegraph search client implementing the SearchClientProtocol interface."""
-
+class SourcegraphClient(AbstractSearchClient):
     def __init__(
         self,
         endpoint: str,

@@ -5,10 +5,10 @@ from typing import Dict, List, Optional, Set
 
 import requests
 
-from backends.content_fetcher_protocol import MAX_FILE_SIZE, ContentFetcherProtocol
+from backends.content_fetcher import MAX_FILE_SIZE, AbstractContentFetcher
 
 
-class ZoektContentFetcher(ContentFetcherProtocol):
+class ZoektContentFetcher(AbstractContentFetcher):
     def __init__(self, zoekt_url: str):
         self.zoekt_url = zoekt_url.rstrip("/")
 
