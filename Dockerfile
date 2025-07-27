@@ -20,4 +20,4 @@ EXPOSE ${MCP_SSE_PORT} ${MCP_STREAMABLE_HTTP_PORT}
 
 WORKDIR /app
 
-ENTRYPOINT ["uv", "run", "code-context-provider"]
+ENTRYPOINT ["uv", "run", "src/main.py"]

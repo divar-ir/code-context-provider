@@ -5,15 +5,16 @@ import os
 import pathlib
 import uuid
 
-from code_context_provider.core import PromptManager
-from code_context_provider.evaluator.config import JudgeConfig
-from code_context_provider.servers.context.agent import CodeSnippetFinder
 from pydantic import BaseModel, Field
 from pydantic_ai.agent import Agent
 from pydantic_ai.models import Model
 from pydantic_ai.models.openai import OpenAIModel, OpenAIModelSettings
 from pydantic_ai.providers.openai import OpenAIProvider
 from pydantic_ai.settings import ModelSettings
+
+from core import PromptManager
+from evaluator.config import JudgeConfig
+from servers.context.agent import CodeSnippetFinder
 
 
 class CodeSnippetResult(BaseModel):
@@ -72,18 +73,10 @@ class CodeAgentTypeParser:
         return model, model_settings
 
 
-async def main():
-    parser = argparse.ArgumentParser(description="Code Snippet Finder")
-    parser.add_argument("-q", type=str, help="Question to ask the agent")
-    parser.add_argument("--trace-id", type=str, help="Trace ID for logging")
-    args = parser.parse_args()
+async def async_main():
+    question = input("Enter a question: ")
 
-    if args.q:
-        question = args.q
-    else:
-        question = input("Enter a question: ")
-
-    async with CodeSnippetFinder(trace_id=args.trace_id) as agent:
+    async with CodeSnippetFinder(trace_id=str(uuid.uuid4())) as agent:
         result = await agent.run(question)
 
     print(f"{'-' * 10}\n{result}\n {'-' * 10}\n")
@@ -100,12 +93,3 @@ async def main():
             indent=2,
             ensure_ascii=True,
         )
-
-
-def cli_main():
-    """CLI entry point wrapper for the async main function."""
-    asyncio.run(main())
-
-
-if __name__ == "__main__":
-    cli_main()

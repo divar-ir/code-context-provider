@@ -4,7 +4,8 @@ import re
 from typing import Dict, List, Optional, Set
 
 import requests
-from code_context_provider.backends.content_fetcher_protocol import MAX_FILE_SIZE, ContentFetcherProtocol
+
+from backends.content_fetcher_protocol import MAX_FILE_SIZE, ContentFetcherProtocol
 
 
 class ZoektContentFetcher(ContentFetcherProtocol):

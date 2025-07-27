@@ -9,12 +9,6 @@ import uuid
 from typing import Any, Dict, List
 
 import requests
-from code_context_provider.backends.content_fetcher_factory import ContentFetcherFactory
-from code_context_provider.backends.content_fetcher_protocol import ContentFetcherProtocol
-from code_context_provider.backends.search_factory import SearchClientFactory
-from code_context_provider.backends.search_protocol import SearchClientProtocol
-from code_context_provider.backends.zoekt import FormattedResult
-from code_context_provider.core import PromptManager
 from dotenv import load_dotenv
 from fastmcp import FastMCP
 from fastmcp.server.dependencies import get_http_request
@@ -23,6 +17,13 @@ from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExport
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import SimpleSpanProcessor
 from starlette.requests import Request
+
+from backends.content_fetcher_factory import ContentFetcherFactory
+from backends.content_fetcher_protocol import ContentFetcherProtocol
+from backends.models import FormattedResult
+from backends.search_factory import SearchClientFactory
+from backends.search_protocol import SearchClientProtocol
+from core import PromptManager
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

@@ -2,15 +2,16 @@ import os
 import pathlib
 from typing import List, Optional
 
-from code_context_provider.core import PromptManager
-from code_context_provider.evaluator.agent import CodeSnippetResult
-from code_context_provider.evaluator.config import JudgeConfig
 from pydantic import BaseModel, Field
 from pydantic_ai.agent import Agent
 from pydantic_ai.models import Model
 from pydantic_ai.models.openai import OpenAIModel, OpenAIModelSettings
 from pydantic_ai.providers.openai import OpenAIProvider
 from pydantic_ai.settings import ModelSettings
+
+from core import PromptManager
+from evaluator.agent import CodeSnippetResult
+from evaluator.config import JudgeConfig
 
 
 class EvaluationResult(BaseModel):

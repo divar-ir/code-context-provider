@@ -82,14 +82,14 @@ Supported backends:
 uv sync
 
 # Run search server (start this first)
-uv run code-context-provider search
+uv run src/main.py search
 
 # In another terminal, run context server (on different ports)
 # Make sure to set MCP_SERVER_URL to the search server's streamable-http endpoint
 export MCP_SERVER_URL=http://localhost:8080/codesearch/mcp/
 export MCP_SSE_PORT=8001
 export MCP_STREAMABLE_HTTP_PORT=8081
-uv run code-context-provider context
+uv run src/main.py context
 ```
 
 ### Using pip
@@ -103,13 +103,13 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -e .
 
 # Run search server (start this first)
-code-context-provider search
+python src/main.py search
 
 # In another terminal, run context server
 export MCP_SERVER_URL=http://localhost:8080/codesearch/mcp/
 export MCP_SSE_PORT=8001
 export MCP_STREAMABLE_HTTP_PORT=8081
-code-context-provider context
+python src/main.py context
 ```
 
 ### Using Docker
@@ -226,7 +226,7 @@ Direct access to search backends with three main tools:
 
 ```bash
 # Start search server
-uv run code-context-provider search
+uv run src/main.py search
 ```
 
 Available at:
@@ -239,13 +239,13 @@ AI-enhanced search with query understanding and intelligent extraction:
 
 ```bash
 # Start search server first (in one terminal)
-uv run code-context-provider search
+uv run src/main.py search
 
 # Then start context server (in another terminal)
 export MCP_SERVER_URL=http://localhost:8080/codesearch/mcp/
 export MCP_SSE_PORT=8001
 export MCP_STREAMABLE_HTTP_PORT=8081
-uv run code-context-provider context
+uv run src/main.py context
 ```
 
 **Note**: The Context Server connects to the Search Server via the MCP_SERVER_URL. Ensure:
@@ -320,21 +320,18 @@ For quick testing and dataset creation:
 
 ```bash
 # First, ensure the search server is running:
-uv run code-context-provider search
+uv run src/main.py search
 
 # In another terminal, set the MCP server URL and run the agent:
 export MCP_SERVER_URL=http://localhost:8080/codesearch/mcp/
 
-# Test a single question and save to question.json
-uv run ccp-agent -q "How do I implement a Redis cache in Python?"
-
-# Interactive mode
-uv run ccp-agent
+# Run the agent interactively (prompts for question and saves to question.json)
+uv run src/main.py agent
 ```
 
 This creates a `question.json` file with the question and AI-generated answer that can be used as evaluation data.
 
-**Note**: The `ccp-agent` command requires the search server to be running as it uses the Context Server's `CodeSnippetFinder` which connects to the search server via MCP.
+**Note**: The `agent` command requires the search server to be running as it uses the Context Server's `CodeSnippetFinder` which connects to the search server via MCP.
 
 #### Automated Evaluation
 
@@ -342,14 +339,14 @@ Run comprehensive evaluations against a Langfuse dataset:
 
 ```bash
 # First, ensure the search server is running:
-uv run code-context-provider search
+uv run src/main.py search
 
 # In another terminal, configure and run evaluation:
 export MCP_SERVER_URL=http://localhost:8080/codesearch/mcp/
 export LANGFUSE_DATASET_NAME=your-dataset-name  # default: code-search-mcp-agentic-v2
 
 # Run evaluation
-uv run ccp-evaluate
+uv run src/main.py evaluate
 ```
 
 **Note**: The evaluation framework also requires the search server to be running.

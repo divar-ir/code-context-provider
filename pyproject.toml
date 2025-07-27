@@ -21,11 +21,6 @@ dependencies = [
     "jinja2==3.1.6",
 ]
 
-[project.scripts]
-code-context-provider = "code_context_provider.main:main"
-ccp-evaluate = "code_context_provider.evaluator.evaluate:main"
-ccp-agent = "code_context_provider.evaluator.agent:cli_main"
-
 [build-system]
 requires = ["setuptools==75.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
@@ -35,8 +30,11 @@ packages = ["code_context_provider"]
 package-dir = {"code_context_provider" = "src"}
 
 [tool.ruff]
-# Same as Black.
+# Same as black
 line-length = 120
 indent-width = 4
-
 target-version = "py313"
+
+[tool.ruff.lint]
+# Import sorting
+select = ["I"]

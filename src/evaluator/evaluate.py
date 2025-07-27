@@ -8,10 +8,10 @@ from dotenv import load_dotenv
 from langfuse import get_client
 from langfuse.model import DatasetItem, DatasetStatus
 
-from code_context_provider.servers.context.agent import CodeSnippetFinder
-from code_context_provider.evaluator.agent import CodeAgentTypeParser, CodeSnippetResult
-from code_context_provider.evaluator.judge import LLMJudge
-from code_context_provider.evaluator.config import JudgeConfig
+from evaluator.agent import CodeAgentTypeParser, CodeSnippetResult
+from evaluator.config import JudgeConfig
+from evaluator.judge import LLMJudge
+from servers.context.agent import CodeSnippetFinder
 
 load_dotenv()
 
@@ -160,11 +160,6 @@ async def run_experiment(experiment_name: str) -> float:
         langfuse.flush()
 
 
-def main():
-    """Main entry point for the evaluation script."""
+async def async_main():
     timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M")
-    asyncio.run(run_experiment(f"codesnippet-evaluation-{timestamp}"))
-
-
-if __name__ == "__main__":
-    main()
+    await run_experiment(f"codesnippet-evaluation-{timestamp}")

@@ -30,7 +30,7 @@ class JudgeConfig:
             self.langfuse_public_key = ""
             self.langfuse_secret_key = ""
             self.langfuse_host = ""
-        
+
         # Evaluation configuration
         self.langfuse_dataset_name = os.getenv("LANGFUSE_DATASET_NAME", "code-search-mcp-agentic-v2")
 

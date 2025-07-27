@@ -8,12 +8,6 @@ import signal
 import uuid
 from typing import Any, List
 
-from code_context_provider.core import PromptManager
-from code_context_provider.servers.context.agent import (
-    CodeSnippetFinder,
-    QueryReformater,
-    QueryReformaterResult,
-)
 from dotenv import load_dotenv
 from fastmcp import FastMCP
 from fastmcp.server.dependencies import get_http_request
@@ -22,6 +16,9 @@ from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExport
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import SimpleSpanProcessor
 from starlette.requests import Request
+
+from core import PromptManager
+from servers.context.agent import CodeSnippetFinder, QueryReformater, QueryReformaterResult
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

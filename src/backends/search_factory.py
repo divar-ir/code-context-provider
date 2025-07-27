@@ -1,6 +1,6 @@
-from code_context_provider.backends.search_protocol import SearchClientProtocol
-from code_context_provider.backends.sourcegraph import SourcegraphClient
-from code_context_provider.backends.zoekt import Client as ZoektClient
+from backends.search_protocol import SearchClientProtocol
+from backends.sourcegraph import SourcegraphClient
+from backends.zoekt import Client as ZoektClient
 
 
 class SearchClientFactory:

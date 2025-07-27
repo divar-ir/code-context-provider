@@ -61,3 +61,6 @@ CLAUDE.md
 logs/
 /question.json
 /.python-version
+
+# Agents Question / Answer
+question.json

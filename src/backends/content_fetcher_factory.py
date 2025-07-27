@@ -1,6 +1,6 @@
-from code_context_provider.backends.content_fetcher_protocol import ContentFetcherProtocol
-from code_context_provider.backends.sourcegraph.fetcher import SourcegraphContentFetcher
-from code_context_provider.backends.zoekt.fetcher import ZoektContentFetcher
+from backends.content_fetcher_protocol import ContentFetcherProtocol
+from backends.sourcegraph.fetcher import SourcegraphContentFetcher
+from backends.zoekt.fetcher import ZoektContentFetcher
 
 
 class ContentFetcherFactory:

@@ -3,9 +3,6 @@ import pathlib
 import uuid
 from typing import List
 
-from code_context_provider.core import PromptManager
-from code_context_provider.core.limiters import TokenLimiter, ToolCallLimiter
-from code_context_provider.servers.context.config import AgentConfig
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field
 from pydantic_ai.agent import Agent
@@ -14,6 +11,10 @@ from pydantic_ai.models import Model
 from pydantic_ai.models.openai import OpenAIModel, OpenAIModelSettings
 from pydantic_ai.providers.openai import OpenAIProvider
 from pydantic_ai.settings import ModelSettings
+
+from core import PromptManager
+from core.limiters import TokenLimiter, ToolCallLimiter
+from servers.context.config import AgentConfig
 
 load_dotenv()
 

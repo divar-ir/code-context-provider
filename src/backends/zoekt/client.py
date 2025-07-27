@@ -1,8 +1,9 @@
 from typing import List
 
 import requests
-from code_context_provider.backends.models import FormattedResult, Match
-from code_context_provider.backends.search_protocol import SearchClientProtocol
+
+from backends.models import FormattedResult, Match
+from backends.search_protocol import SearchClientProtocol
 
 
 class Client(SearchClientProtocol):

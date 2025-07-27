@@ -4,8 +4,9 @@ from typing import Any, Dict, Iterator, List
 from urllib.parse import urlencode
 
 import requests
-from code_context_provider.backends.models import FormattedResult, Match
-from code_context_provider.backends.search_protocol import SearchClientProtocol
+
+from backends.models import FormattedResult, Match
+from backends.search_protocol import SearchClientProtocol
 
 logger = logging.getLogger(__name__)
 

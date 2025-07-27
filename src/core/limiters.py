@@ -1,4 +1,5 @@
 import asyncio
+from functools import wraps
 from typing import Any
 
 from pydantic_ai.agent import Agent, AgentRunResult
@@ -23,7 +24,12 @@ class ToolCallLimiter:
     def wrap_mcp_server(self, mcp_server: MCPServerStreamableHTTP) -> MCPServerStreamableHTTP:
         self._original_call_tool = mcp_server.call_tool
 
-        async def wrapped_call_tool(tool_name: str, arguments: dict[str, Any], metadata: dict[str, Any] | None = None):
+        @wraps(self._original_call_tool)
+        async def wrapped_call_tool(
+            tool_name: str,
+            arguments: dict[str, Any],
+            metadata: dict[str, Any] | None = None,
+        ):
             self.call_count += 1
 
             if self.call_count > self.max_calls:
@@ -103,7 +109,7 @@ class TokenLimiter:
 
                         try:
                             await agent_run.send(limit_message)
-                        except:
+                        except Exception:
                             pass
 
                         continue

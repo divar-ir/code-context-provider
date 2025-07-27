@@ -1,27 +1,44 @@
+import asyncio
 import sys
 
 
-def main():
-    """Main entry point for the code-context-provider command."""
-    if len(sys.argv) < 2:
-        print("Usage: code-context-provider <search|context>")
-        sys.exit(1)
-
-    server_type = sys.argv[1]
-
-    if server_type == "search":
-        from code_context_provider.servers.search.server import main as search_main
-
-        search_main()
-    elif server_type == "context":
-        from code_context_provider.servers.context.server import main as context_main
-
-        context_main()
-    else:
-        print(f"Unknown server type: {server_type}")
-        print("Usage: code-context-provider <search|context>")
-        sys.exit(1)
+def print_help():
+    print("Usage: python main.py <command> [options]")
+    print("\nAvailable commands:")
+    print("  search     - Start the search server")
+    print("  context    - Start the context server")
+    print("  evaluate   - Run evaluation experiments")
+    print("  agent      - Run the code agent interactively")
 
 
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) < 2:
+        print_help()
+        sys.exit(1)
+
+    command = sys.argv[1]
+
+    match command:
+        case "search":
+            from servers.search.server import main as search_main
+
+            search_main()
+        case "context":
+            from servers.context.server import main as context_main
+
+            context_main()
+
+        case "evaluate":
+            from evaluator.evaluate import async_main as evaluate_main
+
+            asyncio.run(evaluate_main())
+
+        case "agent":
+            from evaluator.agent import async_main as agent_main
+
+            asyncio.run(agent_main())
+
+        case _:
+            print(f"Unknown command: {command}")
+            print_help()
+            sys.exit(1)
